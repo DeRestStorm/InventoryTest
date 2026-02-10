@@ -1,0 +1,173 @@
+﻿# AI-related files
+.cursorrules
+CLAUDE.md
+
+# Code-copy related files
+.clipignore
+
+# Python-generated files
+__pycache__/
+__pycache__.meta
+build/
+dist/
+wheels/
+*.egg-info
+UnityMcpServer/**/*.meta
+UnityMcpServer.meta
+
+# Virtual environments
+.venv
+
+*.meta
+# Unity Editor
+*.unitypackage
+# *.csproj
+*.unityproj
+*.sln
+*.suo
+*.tmp
+*.user
+*.pidb
+*.booproj
+*.pdb
+*.mdb
+*.opendb
+*.VC.db
+*.pidb.meta
+*.pdb.meta
+*.mdb.meta
+*.pom.meta
+*.ahbuildinfo
+*.jar
+
+# Unity specific files
+*.unity
+*.prefab
+*.mat
+*.controller
+*.anim
+*.anim.meta
+*.controller.meta
+*.prefab.meta
+*.mat.meta
+*.unity.meta
+*.shader
+*.compute
+*.cginc
+*.hlsl
+*.cg
+
+# Unity Terrain and Shader Graph
+*.terrainlayer
+*.terrainlayer.meta
+*.shadergraph
+*.shadergraph.meta
+*.subgraph
+*.subgraph.meta
+*.shadersubgraph
+*.shadersubgraph.meta
+
+# High dynamic range images
+*.exr
+*.exr.meta
+*.hdr
+*.hdr.meta
+
+# Asset files
+*.fbx
+*.FBX
+*.jpg
+*.JPG
+*.jpeg
+*.JPEG
+*.png
+*.PNG
+*.psd
+*.PSD
+*.wav
+*.WAV
+*.asset
+*.ASSET
+*.fbx.meta
+*.FBX.meta
+*.jpg.meta
+*.JPG.meta
+*.jpeg.meta
+*.JPEG.meta
+*.png.meta
+*.PNG.meta
+*.psd.meta
+*.PSD.meta
+*.wav.meta
+*.WAV.meta
+*.asset.meta
+*.ASSET.meta
+
+# IDE
+.idea/
+.vscode/
+.aider*
+.vs/
+.consulo/
+
+# Spine
+*.atlas.txt
+*.skel.bytes
+*_[Aa]tlas.asset
+*_[Ss]keletonData.asset
+*/[Ss]pine [Ee]xamples/*.json
+
+sysinfo.txt
+
+# Build outputs
+*.apk
+*.aab
+*.aar
+*.unitypackage
+*.unitypackage.meta
+*.app
+
+# Unity Addressables
+/[Aa]ssets/[Aa]ddressable[Aa]ssets[Dd]ata/*/*.bin*
+/[Aa]ssets/[Ss]treamingAssets/aa.meta
+/[Aa]ssets/[Ss]treamingAssets/aa/*
+
+# Unity generated directories
+/[Ll]ibrary/
+/[Tt]emp/
+/[Oo]bj/
+/[Bb]uild/
+/[Bb]uilds/
+/[Ll]ogs/
+/[Uu]ser[Ss]ettings/
+/[Mm]emoryCaptures/
+/[Rr]ecordings/
+/[Pp]roject[Ss]ettings/boot.config
+/[Pp]ackages/packages-lock*.json
+
+# Unity cache and temporary files
+*.tmp
+*.log
+*.stacktrace
+*.pid
+*.pid.meta
+*.lock
+*.lock.meta
+/[Aa]utoGenerated/
+/[Gg]enerated/
+/[Tt]emp[Oo]bj/
+/[Tt]emp[Oo]bj.meta
+
+# Unity packages and modules
+/[Pp]ackages/[Mm]anifest.json
+/[Pp]ackages/packages-lock.json
+/[Pp]ackages/[Mm]anifest.json.meta
+/[Pp]ackages/packages-lock.json.meta
+
+# Git files
+.gitignore
+.gitattributes
+.gitmodules
+.git
+
+Assets/RpgCore/

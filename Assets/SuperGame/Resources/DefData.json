@@ -1,0 +1,18 @@
+{
+    "Items": [
+        {
+            "Id": "Cat",
+            "Name": "Кошка",
+            "Color": "#187d09",
+            "Stackable": false
+        },
+        {
+            "Id": "poop",
+            "Name": "Какашка",
+            "Color": "#632f02",
+            "Stackable": true,
+            "MaxStack": 2
+        }
+    ],
+    "MaxInvetorySize": 12
+}
