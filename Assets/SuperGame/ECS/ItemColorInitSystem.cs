@@ -1,6 +1,7 @@
 using Definitions;
 using Unity.Collections;
 using Unity.Entities;
+using Unity.Rendering;
 using UnityEngine;
 
 namespace SuperGame.ECS
@@ -20,15 +21,13 @@ namespace SuperGame.ECS
 
             var entityManager = state.EntityManager;
 
-            var query = SystemAPI.QueryBuilder().WithAll<NotInited, Item, RendererData>().Build();
+            var query = SystemAPI.QueryBuilder().WithAll<NotInited, Item, RenderMeshArray>().Build();
             using var entities = query.ToEntityArray(Allocator.Temp);
 
             foreach (var entity in entities)
             {
                 var item = entityManager.GetComponentData<Item>(entity);
-                var rendererData = entityManager.GetComponentObject<RendererData>(entity);
-                if (rendererData is null)
-                    continue;
+                var rendererData = entityManager.GetSharedComponentManaged<RenderMeshArray>(entity);
 
                 var defId = item.DefId;
                 if (items.TryGetValue(defId, out ItemDef def) is false)
@@ -37,23 +36,24 @@ namespace SuperGame.ECS
                 if (ColorUtility.TryParseHtmlString(def.Color, out Color c) is false)
                     c = Color.white;
 
-                if (rendererData.Renderers is null)
-                    continue;
-
-                foreach (var renderer in rendererData.Renderers)
+                var meshCount = rendererData.MeshReferences.Length;
+                var meshes = new Mesh[meshCount];
+                for (var i = 0; i < meshCount; i++)
                 {
-                    if (renderer is null)
-                        continue;
-                    var meshFilter = renderer.GetComponent<MeshFilter>();
-                    if (meshFilter is null)
-                        continue;
-                    var mesh = meshFilter.mesh;
-                    var colors = new Color[mesh.vertexCount];
-                    for (var i = 0; i < colors.Length; i++)
-                        colors[i] = c;
-                    mesh.SetColors(colors);
+                    var source = rendererData.MeshReferences[i].Value;
+                    var copy = Object.Instantiate(source);
+                    var colors = new Color[copy.vertexCount];
+                    for (var j = 0; j < colors.Length; j++)
+                        colors[j] = c;
+                    copy.SetColors(colors);
+                    meshes[i] = copy;
                 }
 
+                var materials = new Material[rendererData.MaterialReferences.Length];
+                for (var i = 0; i < materials.Length; i++)
+                    materials[i] = rendererData.MaterialReferences[i].Value;
+
+                entityManager.SetSharedComponentManaged(entity, new RenderMeshArray(materials, meshes));
                 entityManager.RemoveComponent<NotInited>(entity);
             }
         }

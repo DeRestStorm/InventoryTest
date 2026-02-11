@@ -11,31 +11,29 @@ namespace SuperGame.ECS
     [UpdateBefore(typeof(PlayerMoveSystem))]
     public partial struct InputSyncSystem : ISystem
     {
-        static GameInputSettings _cachedSettings;
+        static InputAction _moveAction;
 
         public void OnCreate(ref SystemState state)
         {
-            _cachedSettings = Resources.Load<GameInputSettings>(GameInputSettings.ResourcePath);
+            var settings = Resources.Load<GameInputSettings>(GameInputSettings.ResourcePath);
+            if (settings is null || settings.InputActions is null)
+                return;
+            var map = settings.InputActions.FindActionMap("Player");
+            map.Enable();
+            _moveAction = map.FindAction("Move");
         }
 
         public void OnUpdate(ref SystemState state)
         {
+            if (_moveAction is null)
+                return;
             var query = SystemAPI.QueryBuilder().WithAll<PlayerInputData, PlayerMoveInput>().Build();
             using var entities = query.ToEntityArray(Allocator.Temp);
             if (entities.Length == 0)
                 return;
 
             var entity = entities[0];
-            var data = state.EntityManager.GetComponentObject<PlayerInputData>(entity);
-            var settings = data.Settings ?? _cachedSettings;
-            if (settings is null)
-                return;
-
-            var moveAction = settings.MoveAction;
-            if (moveAction is null)
-                return;
-
-            var v = moveAction.ReadValue<Vector2>();
+            var v = _moveAction.ReadValue<Vector2>();
             state.EntityManager.SetComponentData(entity, new PlayerMoveInput { Value = new float2(v.x, v.y) });
         }
     }
