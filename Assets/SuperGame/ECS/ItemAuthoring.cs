@@ -1,6 +1,5 @@
 using System;
 using Definitions;
-using Unity.Collections;
 using Unity.Entities;
 using UnityEngine;
 
@@ -17,23 +16,28 @@ namespace SuperGame.ECS
                 Renderers = GetComponentsInChildren<MeshRenderer>(true);
         }
 
-        class Baker : Baker<ItemAuthoring>
+        void Start()
         {
-            public override void Bake(ItemAuthoring authoring)
+            if (Enum.TryParse<ItemDefId>(DefId, out var itemDefId) is false)
+                return;
+            var items = Defs.Items;
+            if (items is null || items.TryGetValue(itemDefId, out ItemDef def) is false)
+                return;
+            if (ColorUtility.TryParseHtmlString(def.Color, out Color c) is false)
+                c = Color.white;
+            if (Renderers is null || Renderers.Length == 0)
+                Renderers = GetComponentsInChildren<MeshRenderer>(true);
+            foreach (var r in Renderers)
             {
-                if (authoring.Renderers is null || authoring.Renderers.Length == 0)
-                    authoring.Renderers = authoring.GetComponentsInChildren<MeshRenderer>(true);
-
-                if (Enum.TryParse<ItemDefId>(authoring.DefId, out var itemDefId) is false)
-                {
-                    Debug.LogError($"Invalid itemId {authoring.DefId}");
-                    return;
-                }
-
-                var entity = GetEntity(TransformUsageFlags.Renderable);
-                AddComponent(entity, new Item { DefId = itemDefId });
-                AddComponentObject(entity, new RendererData { Renderers = authoring.Renderers });
-                AddComponent(entity, new NotInited());
+                var filter = r.GetComponent<MeshFilter>();
+                if (filter is null || filter.sharedMesh is null)
+                    continue;
+                var mesh = Instantiate(filter.sharedMesh);
+                var colors = new Color[mesh.vertexCount];
+                for (var i = 0; i < colors.Length; i++)
+                    colors[i] = c;
+                mesh.SetColors(colors);
+                filter.sharedMesh = mesh;
             }
         }
     }
