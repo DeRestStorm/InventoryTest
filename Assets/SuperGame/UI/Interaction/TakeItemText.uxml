@@ -1,0 +1,6 @@
+<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/SuperGame/UI/MainSyle.uss?fileID=7433441132597879392&amp;guid=ea637c3ee2a6b7949a8f762e68278d12&amp;type=3#MainSyle"/>
+    <ui:VisualElement name="TakeItemContainer" class="containerAbsolute" style="flex-grow: 1; top: 0; left: 0; right: 0; bottom: 0;">
+        <ui:Label text="&#1053;&#1072;&#1078;&#1084;&#1080;&#1090;&#1077; E" name="TakeText" class="takeText"/>
+    </ui:VisualElement>
+</ui:UXML>
