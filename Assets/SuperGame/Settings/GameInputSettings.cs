@@ -9,5 +9,6 @@ namespace SuperGame
         public const string ResourcePath = "GameInputSettings";
 
         public InputActionAsset InputActions;
+        public ThirdPersonCameraSettings CameraSettings;
     }
 }

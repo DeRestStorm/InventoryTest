@@ -9,7 +9,7 @@
         {
             "Id": "Poop",
             "Name": "Какашка",
-            "Color": "#632f02",
+            "Color": "#50390E",
             "Stackable": true,
             "MaxStack": 2
         }

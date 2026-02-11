@@ -21,10 +21,8 @@ namespace SuperGame
                 foreach (ItemDefDto entry in dto.Items)
                 {
                     var (stringId, name, color, stackable, maxStack) = entry;
-                    if (Enum.TryParse<ItemDefId>(stringId, out var itemDefId))
-                    {
-                        items[itemDefId] = new ItemDef(name, color, stackable, maxStack);
-                    }
+                    var itemDefId = new ItemDefId(stringId);
+                    items[itemDefId] = new ItemDef(name, color, stackable, maxStack);
                 }
             }
 

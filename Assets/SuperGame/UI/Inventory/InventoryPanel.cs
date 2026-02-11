@@ -19,7 +19,8 @@ namespace SuperGame
         bool _visible;
 
         InventoryState _inventory;
-        Action<MoveItemCommand> _onMoveCommand;
+        Commands _commands;
+        DefData _defData;
 
         readonly List<InventorySlotView> _slots = new();
 
@@ -27,21 +28,13 @@ namespace SuperGame
         VisualElement _dragGhost;
         bool _isDragging;
 
-        public void Init(InventoryState inventory, Action<MoveItemCommand> onMoveCommand)
+        public void Init(InventoryState inventory, Commands commands, DefData defData)
         {
             _inventory = inventory;
-            _onMoveCommand = onMoveCommand;
+            _commands = commands;
+            _defData = defData;
             _inventory.OnChanged += RefreshSlots;
-        }
-
-        void Awake()
-        {
-            if (_document is null)
-                _document = GetComponent<UIDocument>();
-        }
-
-        void Start()
-        {
+            
             _root = _document.rootVisualElement;
             _root.style.display = DisplayStyle.None;
             _visible = false;
@@ -54,19 +47,25 @@ namespace SuperGame
             _root.RegisterCallback<PointerUpEvent>(OnPointerUp);
         }
 
-        void CreateSlots()
+        private void Awake()
+        {
+            if (_document is null)
+                _document = GetComponent<UIDocument>();
+        }
+
+        private void CreateSlots()
         {
             var container = _scrollView.contentContainer;
             container.Clear();
             container.AddToClassList("inventory-grid");
             _slots.Clear();
 
-            int maxSlots = Defs.MaxInventorySize;
+            int maxSlots = _defData.MaxInventorySize;
 
             for (int i = 0; i < maxSlots; i++)
             {
                 var element = _slotTemplate.Instantiate();
-                var slotView = new InventorySlotView(element.Q("Slot"), i);
+                var slotView = new InventorySlotView(element.Q("Slot"), i, _defData);
 
                 slotView.Root.RegisterCallback<PointerDownEvent>(evt => OnSlotPointerDown(evt, slotView));
 
@@ -98,7 +97,7 @@ namespace SuperGame
             }
         }
 
-        void OnSlotPointerDown(PointerDownEvent evt, InventorySlotView slot)
+        private void OnSlotPointerDown(PointerDownEvent evt, InventorySlotView slot)
         {
             if (evt.button != 0 || slot.Item is null)
                 return;
@@ -110,7 +109,7 @@ namespace SuperGame
             _dragGhost.AddToClassList("drag-ghost");
             _dragGhost.pickingMode = PickingMode.Ignore;
 
-            if (Defs.Items.TryGetValue(slot.Item.DefId, out var def)
+            if (_defData.Items.TryGetValue(slot.Item.DefId, out var def)
                 && ColorUtility.TryParseHtmlString(def.Color, out var color))
             {
                 _dragGhost.style.backgroundColor = new StyleColor(color);
@@ -123,7 +122,7 @@ namespace SuperGame
             evt.StopPropagation();
         }
 
-        void OnPointerMove(PointerMoveEvent evt)
+        private void OnPointerMove(PointerMoveEvent evt)
         {
             if (_isDragging is false || _dragGhost is null)
                 return;
@@ -136,7 +135,7 @@ namespace SuperGame
                 target.SetHighlight(true);
         }
 
-        void OnPointerUp(PointerUpEvent evt)
+        private void OnPointerUp(PointerUpEvent evt)
         {
             if (_isDragging is false)
                 return;
@@ -147,20 +146,20 @@ namespace SuperGame
             if (target is not null && _dragSource is not null && target != _dragSource)
             {
                 var command = new MoveItemCommand(_dragSource.Item.Id, (short)target.SlotIndex);
-                _onMoveCommand?.Invoke(command);
+                _commands.MoveItem(command);
             }
 
             EndDrag();
         }
 
-        void UpdateGhostPosition(Vector3 pointerPosition)
+        private void UpdateGhostPosition(Vector3 pointerPosition)
         {
             var local = _root.WorldToLocal(new Vector2(pointerPosition.x, pointerPosition.y));
             _dragGhost.style.left = local.x - 35;
             _dragGhost.style.top = local.y - 35;
         }
 
-        void EndDrag()
+        private void EndDrag()
         {
             if (_dragSource is not null)
                 _dragSource.Root.style.opacity = 1f;
@@ -175,13 +174,13 @@ namespace SuperGame
             _isDragging = false;
         }
 
-        void ClearHighlights()
+        private void ClearHighlights()
         {
             foreach (var slot in _slots)
                 slot.SetHighlight(false);
         }
 
-        InventorySlotView FindSlotUnderPointer(Vector2 position)
+        private InventorySlotView FindSlotUnderPointer(Vector2 position)
         {
             var picked = _root.panel.Pick(position);
             if (picked is null)
@@ -196,7 +195,7 @@ namespace SuperGame
             return null;
         }
 
-        static bool IsChildOf(VisualElement element, VisualElement parent)
+        private static bool IsChildOf(VisualElement element, VisualElement parent)
         {
             var current = element;
             while (current is not null)
@@ -208,13 +207,13 @@ namespace SuperGame
             return false;
         }
 
-        void OnDestroy()
+        private void OnDestroy()
         {
             if (_inventory is not null)
                 _inventory.OnChanged -= RefreshSlots;
         }
 
-        void Update()
+        private void Update()
         {
             if (Keyboard.current is null)
                 return;
@@ -222,7 +221,7 @@ namespace SuperGame
                 Toggle();
         }
 
-        void Toggle()
+        private void Toggle()
         {
             _visible = _visible is false;
             _root.style.display = _visible ? DisplayStyle.Flex : DisplayStyle.None;

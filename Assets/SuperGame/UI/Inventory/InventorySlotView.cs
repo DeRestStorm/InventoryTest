@@ -14,11 +14,13 @@ namespace SuperGame
         Label _name;
         Label _count;
         ItemState _item;
+        readonly DefData _defData;
 
-        public InventorySlotView(VisualElement root, int slotIndex)
+        public InventorySlotView(VisualElement root, int slotIndex, DefData defData)
         {
             Root = root;
             SlotIndex = slotIndex;
+            _defData = defData;
             _icon = root.Q<VisualElement>("Icon");
             _name = root.Q<Label>("Name");
             _count = root.Q<Label>("Count");
@@ -35,7 +37,7 @@ namespace SuperGame
                 return;
             }
 
-            if (Defs.Items is null || Defs.Items.TryGetValue(item.DefId, out var def) is false)
+            if (_defData.Items is null || _defData.Items.TryGetValue(item.DefId, out var def) is false)
             {
                 Clear();
                 return;
@@ -64,7 +66,7 @@ namespace SuperGame
 
         public void SetHighlight(bool on)
         {
-            Root.EnableInClassList("inventory_slot--highlight", on);
+            Root.EnableInClassList("inventory-slot--highlight", on);
         }
     }
 }

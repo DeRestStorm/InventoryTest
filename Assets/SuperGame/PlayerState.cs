@@ -1,17 +1,22 @@
-﻿using System.Collections.Generic;
+using System;
+using System.Collections.Generic;
 using Definitions;
 
 namespace SuperGame
 {
-    public class State
+    public class PlayerState
     {
         public InventoryState Inventory = new();
     }
 
     public class InventoryState
     {
+        public event Action OnChanged;
+
         public Dictionary<int, short> Slots = new();
         public Dictionary<int, ItemState> Items = new();
+
+        public void NotifyChanged() => OnChanged?.Invoke();
     }
 
     public class ItemState

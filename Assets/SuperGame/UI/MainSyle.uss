@@ -1,18 +1,18 @@
 VisualElement {
 }
 
-.backgroundBlack {
+.background-black {
     background-color: rgba(0, 0, 0, 0.5);
 }
 
-.containerAbsolute {
+.container-absolute {
     right: 0;
     top: 0;
     bottom: 0;
     left: 0;
 }
 
-.leftPanel {
+.left-panel {
     flex-grow: 1;
     position: absolute;
     right: 0;
@@ -21,14 +21,17 @@ VisualElement {
     width: 300px;
 }
 
-.scrollView {
+.scroll-view {
 }
 
-.takeText {
+.take-text {
     -unity-text-align: middle-center;
     color: white;
     position: absolute;
     font-size: 30px;
+    transition-property: left, top;
+    transition-duration: 0.0s;
+    transition-timing-function: ease-out;
 }
 
 .inventory-grid {
@@ -37,7 +40,7 @@ VisualElement {
     padding: 8px;
 }
 
-.inventory_slot {
+.inventory-slot {
     width: 70px;
     height: 70px;
     background-color: rgba(0, 0, 0, 0.5);
@@ -47,13 +50,13 @@ VisualElement {
     align-items: center;
 }
 
-.inventory_slot__icon {
+.inventory-slot__icon {
     width: 60px;
     height: 60px;
     border-radius: 8px;
 }
 
-.inventory_slot__name {
+.inventory-slot__name {
     color: white;
     font-size: 10px;
     -unity-text-align: middle-center;
@@ -63,7 +66,7 @@ VisualElement {
     max-width: 66px;
 }
 
-.inventory_slot__count {
+.inventory-slot__count {
     position: absolute;
     right: 4px;
     bottom: 2px;
@@ -72,7 +75,7 @@ VisualElement {
     -unity-font-style: bold;
 }
 
-.inventory_slot--highlight {
+.inventory-slot--highlight {
     border-width: 2px;
     border-color: rgba(255, 255, 0, 0.8);
 }

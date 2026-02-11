@@ -1,18 +1,52 @@
+using System.Linq;
 using Definitions;
-using Unity.Scenes;
+using SuperGame.ECS;
 using UnityEngine;
 
 namespace SuperGame
 {
     public class EntryPoint : MonoBehaviour
     {
-        private DefData _defData;
-        [SerializeField] private SubScene _subScene;
+        [SerializeField] InventoryPanel _inventoryPanel;
+        [SerializeField] PickupSystem _pickupSystem;
+
+        DefData _defData;
+        PlayerState _playerState;
+        Commands _commands;
 
         private void Start()
         {
             _defData = InitDefs.LoadFromJson();
-            Defs.Init(_defData);
+            var worldItems = FindObjectsByType<WorldItem>( FindObjectsInactive.Exclude, FindObjectsSortMode.None);
+            var world = new World();
+            InitWorldItem(worldItems, world);
+            var worldApi = new WorldApi(world);
+
+            _playerState = new PlayerState();
+            _commands = new Commands(_defData, _playerState.Inventory, worldApi);
+
+            _inventoryPanel.Init(_playerState.Inventory, _commands, _defData);
+            _pickupSystem.Init(_commands);
+        }
+
+        private void InitWorldItem(WorldItem[] worldItems, World world)
+        {
+            int nextItemId = 1;
+            foreach (var worldItem in worldItems)
+            {
+                var defId = new ItemDefId(worldItem.DefId);
+                if (_defData.Items.TryGetValue(defId, out var def) is false)
+                {
+                    Debug.LogError($"Item {defId} not found in defs.Items");
+                    continue;
+                }
+
+                var itemId = nextItemId++;
+
+                var state = new ItemState(itemId, defId, worldItem.Count);
+                worldItem.Init(state, def);
+                world.WorldItems.Add(itemId, worldItem);
+            }
         }
     }
 }
