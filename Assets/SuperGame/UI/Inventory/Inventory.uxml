@@ -1,0 +1,6 @@
+<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/SuperGame/UI/MainSyle.uss?fileID=7433441132597879392&amp;guid=ea637c3ee2a6b7949a8f762e68278d12&amp;type=3#MainSyle"/>
+    <ui:VisualElement name="" class="leftPanel">
+        <ui:ScrollView name="InventoryScrollView" class="scrollView" style="width: 100%;"/>
+    </ui:VisualElement>
+</ui:UXML>

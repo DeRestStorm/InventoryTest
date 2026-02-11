@@ -1,0 +1,13 @@
+VisualElement {
+}
+
+.leftPanel {
+    flex-grow: 1;
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 300px;
+}
+
+.scrollView{}
