@@ -1,0 +1,2 @@
+- **Сцена для запуска**: `Assets/Scenes/SampleScene.unity`
+- **JSON с настройками**: `Assets/Resources/DefData.json`
