@@ -1,18 +1,31 @@
 {
     "Items": [
         {
+            "Id": "Stone",
+            "Name": "Камень",
+            "Color": "#070707",
+            "Stackable": true,
+            "MaxStack": 4
+        },
+        {
             "Id": "Cat",
             "Name": "Кошка",
             "Color": "#187d09",
             "Stackable": false
         },
         {
+            "Id": "Pig",
+            "Name": "Хрюша",
+            "Color": "#FFB6C1",
+            "Stackable": false
+        },
+        {
             "Id": "Poop",
-            "Name": "Какашка",
+            "Name": "Навоз",
             "Color": "#50390E",
             "Stackable": true,
             "MaxStack": 2
         }
     ],
-    "MaxInvetorySize": 12
+    "MaxInventorySize": 13
 }

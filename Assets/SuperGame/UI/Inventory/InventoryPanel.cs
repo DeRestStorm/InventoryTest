@@ -15,6 +15,7 @@ namespace SuperGame
         [SerializeField] VisualTreeAsset _slotTemplate;
 
         VisualElement _root;
+        VisualElement _dropZone;
         ScrollView _scrollView;
         bool _visible;
 
@@ -39,6 +40,7 @@ namespace SuperGame
             _root.style.display = DisplayStyle.None;
             _visible = false;
 
+            _dropZone = _root.Q<VisualElement>("DropZone");
             _scrollView = _root.Q<ScrollView>("InventoryScrollView");
 
             CreateSlots();
@@ -99,7 +101,17 @@ namespace SuperGame
 
         private void OnSlotPointerDown(PointerDownEvent evt, InventorySlotView slot)
         {
-            if (evt.button != 0 || slot.Item is null)
+            if (slot.Item is null)
+                return;
+
+            if (evt.button == 1)
+            {
+                _commands.DropItem(slot.Item.Id);
+                evt.StopPropagation();
+                return;
+            }
+
+            if (evt.button != 0)
                 return;
 
             _dragSource = slot;
@@ -111,9 +123,9 @@ namespace SuperGame
 
             if (_defData.Items.TryGetValue(slot.Item.DefId, out var def)
                 && ColorUtility.TryParseHtmlString(def.Color, out var color))
-            {
-                _dragGhost.style.backgroundColor = new StyleColor(color);
-            }
+                _dragGhost.style.unityBackgroundImageTintColor = new StyleColor(color);
+            else
+                _dragGhost.style.unityBackgroundImageTintColor = new StyleColor(Color.white);
 
             _root.Add(_dragGhost);
             UpdateGhostPosition(evt.position);
@@ -133,6 +145,8 @@ namespace SuperGame
             var target = FindSlotUnderPointer(evt.position);
             if (target is not null && target != _dragSource)
                 target.SetHighlight(true);
+            else if (IsPointerOverDropZone(evt.position))
+                _dropZone?.EnableInClassList("drop-zone--highlight", true);
         }
 
         private void OnPointerUp(PointerUpEvent evt)
@@ -145,8 +159,11 @@ namespace SuperGame
 
             if (target is not null && _dragSource is not null && target != _dragSource)
             {
-                var command = new MoveItemCommand(_dragSource.Item.Id, (short)target.SlotIndex);
-                _commands.MoveItem(command);
+                _commands.MoveItem(_dragSource.Item.Id, (short)target.SlotIndex);
+            }
+            else if (_dragSource is not null && IsPointerOverDropZone(evt.position))
+            {
+                _commands.DropItem(_dragSource.Item.Id);
             }
 
             EndDrag();
@@ -178,6 +195,15 @@ namespace SuperGame
         {
             foreach (var slot in _slots)
                 slot.SetHighlight(false);
+            _dropZone?.EnableInClassList("drop-zone--highlight", false);
+        }
+
+        private bool IsPointerOverDropZone(Vector2 position)
+        {
+            if (_dropZone is null)
+                return false;
+            var picked = _root.panel.Pick(position);
+            return picked is not null && IsChildOf(picked, _dropZone);
         }
 
         private InventorySlotView FindSlotUnderPointer(Vector2 position)

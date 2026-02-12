@@ -9,6 +9,12 @@ namespace SuperGame
     {
         [SerializeField] InventoryPanel _inventoryPanel;
         [SerializeField] PickupSystem _pickupSystem;
+        [SerializeField] WorldItem _worldItemPrefab;
+        [SerializeField] Transform _player;
+        [SerializeField] GameInputSettings _gameSettings;
+        [SerializeField] PlayerMovement _playerMovement;
+        [SerializeField] ThirdPersonCamera _thirdPersonCamera;
+        [SerializeField] GameStateController _gameStateController;
 
         DefData _defData;
         PlayerState _playerState;
@@ -17,21 +23,23 @@ namespace SuperGame
         private void Start()
         {
             _defData = InitDefs.LoadFromJson();
-            var worldItems = FindObjectsByType<WorldItem>( FindObjectsInactive.Exclude, FindObjectsSortMode.None);
+            var worldItems = FindObjectsByType<WorldItem>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
             var world = new World();
             InitWorldItem(worldItems, world);
-            var worldApi = new WorldApi(world);
+            var worldApi = new WorldApi(world, _worldItemPrefab, _defData, _player);
 
             _playerState = new PlayerState();
             _commands = new Commands(_defData, _playerState.Inventory, worldApi);
 
             _inventoryPanel.Init(_playerState.Inventory, _commands, _defData);
-            _pickupSystem.Init(_commands);
+            _pickupSystem.Init(_commands, _gameSettings);
+            _playerMovement.Init(_gameSettings);
+            _thirdPersonCamera.Init(_gameSettings);
+            _gameStateController.Init(_thirdPersonCamera, _playerMovement, _inventoryPanel, _pickupSystem);
         }
 
         private void InitWorldItem(WorldItem[] worldItems, World world)
         {
-            int nextItemId = 1;
             foreach (var worldItem in worldItems)
             {
                 var defId = new ItemDefId(worldItem.DefId);
@@ -41,7 +49,7 @@ namespace SuperGame
                     continue;
                 }
 
-                var itemId = nextItemId++;
+                var itemId = world.AllocateItemId();
 
                 var state = new ItemState(itemId, defId, worldItem.Count);
                 worldItem.Init(state, def);

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Definitions;
 
 namespace SuperGame
@@ -11,10 +12,23 @@ namespace SuperGame
 
     public class InventoryState
     {
+        private int _nextItemId = 1;
+
         public event Action OnChanged;
 
         public Dictionary<int, short> Slots = new();
         public Dictionary<int, ItemState> Items = new();
+
+        public int AllocateItemId()
+        {
+            if (Items.Count > 0)
+            {
+                int max = Items.Keys.Max();
+                if (_nextItemId <= max)
+                    _nextItemId = max + 1;
+            }
+            return _nextItemId++;
+        }
 
         public void NotifyChanged() => OnChanged?.Invoke();
     }

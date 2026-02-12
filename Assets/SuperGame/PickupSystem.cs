@@ -15,10 +15,12 @@ namespace SuperGame
         private VisualElement _takeContainer;
         private Label _takeText;
         private Commands _commands;
+        private GameInputSettings _settings;
 
-        public void Init(Commands commands)
+        public void Init(Commands commands, GameInputSettings settings)
         {
             _commands = commands;
+            _settings = settings;
         }
 
         private void Start()
@@ -42,6 +44,7 @@ namespace SuperGame
             var cameraTransform = _camera.transform;
             var cameraDir = cameraTransform.forward;
             var cameraPos = cameraTransform.position;
+            var minDot = _settings.PickupMinDot;
             WorldItem closestItem = null;
             float maxDot = float.MinValue;
 
@@ -54,7 +57,9 @@ namespace SuperGame
                 // ближе к 1 - ближе к крсору (направлению камеры)
                 // 0 это уже сбоку от камеры
                 // -1 позади камеры
-                var dot = Vector3.Dot(dirToItem, cameraDir); 
+                var dot = Vector3.Dot(dirToItem, cameraDir);
+                if (dot < minDot)
+                    continue;
                 if (dot > maxDot)
                 {
                     closestItem = worldItem;
@@ -72,8 +77,11 @@ namespace SuperGame
 
             var panelPos = RuntimePanelUtils.CameraTransformWorldToPanel(
                 _takeText.panel, closestItem.transform.position, _camera);
-            _takeText.style.left = panelPos.x - _takeText.resolvedStyle.width / 2f;
-            _takeText.style.top = panelPos.y - _takeText.resolvedStyle.height;
+            var x = panelPos.x - _takeText.resolvedStyle.width / 2f;
+            var y = panelPos.y - _takeText.resolvedStyle.height;
+            _takeText.style.translate = new Translate(
+                new Length(x, LengthUnit.Pixel),
+                new Length(y, LengthUnit.Pixel));
 
             if (Keyboard.current is not null && Keyboard.current.eKey.wasPressedThisFrame)
                 TryPickup(closestItem);
@@ -81,8 +89,13 @@ namespace SuperGame
 
         private void TryPickup(WorldItem worldItem)
         {
-            var command = new PickupItemCommand(worldItem.ItemState.Id);
-            _commands.PickupItem(command);
+            _commands.PickupItem(worldItem.ItemState.Id);
+        }
+
+        public void SetGameplayUIVisible(bool visible)
+        {
+            if (_takeUI is not null)
+                _takeUI.rootVisualElement.style.display = visible ? DisplayStyle.Flex : DisplayStyle.None;
         }
     }
 }

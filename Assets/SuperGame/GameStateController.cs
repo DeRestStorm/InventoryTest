@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.UIElements;
 using Cursor = UnityEngine.Cursor;
 
 namespace SuperGame
@@ -12,22 +11,38 @@ namespace SuperGame
 
     public class GameStateController : MonoBehaviour
     {
-        [SerializeField] ThirdPersonCamera _camera;
-        [SerializeField] PlayerMovement _playerMovement;
-        [SerializeField] InventoryPanel _inventoryPanel;
-        [SerializeField] UIDocument _takeUI;
-
+        ThirdPersonCamera _camera;
+        PlayerMovement _playerMovement;
+        InventoryPanel _inventoryPanel;
+        PickupSystem _pickupSystem;
         GameStateType _current = GameStateType.Gameplay;
+
+        public void Init(ThirdPersonCamera camera, PlayerMovement playerMovement, InventoryPanel inventoryPanel, PickupSystem pickupSystem)
+        {
+            _camera = camera;
+            _playerMovement = playerMovement;
+            _inventoryPanel = inventoryPanel;
+            _pickupSystem = pickupSystem;
+            if (isActiveAndEnabled)
+                SubscribeAndApply();
+        }
 
         private void OnEnable()
         {
-            _inventoryPanel.OnToggled += HandleInventoryToggled;
-            ApplyState();
+            if (_inventoryPanel != null)
+                SubscribeAndApply();
         }
 
         private void OnDisable()
         {
-            _inventoryPanel.OnToggled -= HandleInventoryToggled;
+            if (_inventoryPanel != null)
+                _inventoryPanel.OnToggled -= HandleInventoryToggled;
+        }
+
+        private void SubscribeAndApply()
+        {
+            _inventoryPanel.OnToggled += HandleInventoryToggled;
+            ApplyState();
         }
 
         private void HandleInventoryToggled(bool visible)
@@ -50,9 +65,7 @@ namespace SuperGame
 
             _camera.ControlEnabled = gameplay;
             _playerMovement.ControlEnabled = gameplay;
-
-            if (_takeUI is not null)
-                _takeUI.rootVisualElement.style.display = gameplay ? DisplayStyle.Flex : DisplayStyle.None;
+            _pickupSystem.SetGameplayUIVisible(gameplay);
 
             Cursor.lockState = gameplay ? CursorLockMode.Locked : CursorLockMode.None;
             Cursor.visible = gameplay is false;

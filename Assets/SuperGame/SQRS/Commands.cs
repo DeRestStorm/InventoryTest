@@ -6,21 +6,28 @@ namespace SuperGame
     {
         readonly MoveItemHandler _moveItemHandler;
         readonly PickupItemHandler _pickupItemHandler;
+        readonly DropItemHandler _dropItemHandler;
 
         public Commands(DefData defs, InventoryState inventory, WorldApi worldApi)
         {
             _moveItemHandler = new MoveItemHandler(defs, inventory);
             _pickupItemHandler = new PickupItemHandler(defs, inventory, worldApi);
+            _dropItemHandler = new DropItemHandler(inventory, worldApi);
         }
 
-        public void MoveItem(MoveItemCommand command)
+        public void MoveItem(int itemId, short toPosition)
         {
-            _moveItemHandler.Handle(command);
+            _moveItemHandler.Handle(new MoveItemCommand(itemId, toPosition));
         }
 
-        public void PickupItem(PickupItemCommand command)
+        public void PickupItem(int itemId)
         {
-            _pickupItemHandler.Handle(command);
+            _pickupItemHandler.Handle(new PickupItemCommand(itemId));
+        }
+
+        public void DropItem(int itemId)
+        {
+            _dropItemHandler.Handle(new DropItemCommand(itemId));
         }
     }
 }

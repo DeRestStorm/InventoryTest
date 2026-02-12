@@ -30,6 +30,7 @@ namespace SuperGame
         public void SetItem(ItemState item)
         {
             _item = item;
+            _icon.EnableInClassList("inventory-slot__item", item is not null);
 
             if (item is null)
             {
@@ -44,22 +45,22 @@ namespace SuperGame
             }
 
             if (ColorUtility.TryParseHtmlString(def.Color, out var color))
-                _icon.style.backgroundColor = new StyleColor(color);
+                _icon.style.unityBackgroundImageTintColor = new StyleColor(color);
             else
-                _icon.style.backgroundColor = StyleKeyword.None;
+                _icon.style.unityBackgroundImageTintColor = new StyleColor(Color.white);
 
             _name.text = def.Name;
             _name.style.display = DisplayStyle.Flex;
 
-            if (item.Count > 1) 
-                _count.text = item.Count.ToString();
-            _count.style.display = item.Count > 1 ? DisplayStyle.Flex : DisplayStyle.None;
+            _count.text = item.Count.ToString();
+            _count.style.display = def.Stackable || item.Count > 1 ? DisplayStyle.Flex : DisplayStyle.None;
         }
 
         public void Clear()
         {
             _item = null;
-            _icon.style.backgroundColor = StyleKeyword.None;
+            _icon.EnableInClassList("inventory-slot__item", false);
+            _icon.style.unityBackgroundImageTintColor = new StyleColor(Color.white);
             _name.style.display = DisplayStyle.None;
             _count.style.display = DisplayStyle.None;
         }

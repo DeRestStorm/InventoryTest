@@ -1,4 +1,5 @@
 using System;
+using UnityEngine.Serialization;
 
 namespace Definitions
 {
@@ -6,7 +7,7 @@ namespace Definitions
     public class DefDataDto
     {
         public ItemDefDto[] Items;
-        public int MaxInvetorySize = 12;
+        public int MaxInventorySize = 12;
     }
 
     [Serializable]

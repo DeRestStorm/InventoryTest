@@ -2,7 +2,7 @@
     <Style src="project://database/Assets/SuperGame/UI/MainSyle.uss?fileID=7433441132597879392&amp;guid=ea637c3ee2a6b7949a8f762e68278d12&amp;type=3#MainSyle"/>
     <ui:VisualElement name="Slot" class="inventory-slot">
         <ui:VisualElement name="Icon" class="inventory-slot__icon">
-            <ui:Label name="Name" class="inventory-slot__name"/>             
+            <ui:Label name="Name" class="inventory-slot__name"/>
             <ui:Label name="Count" class="inventory-slot__count"/>
         </ui:VisualElement>
     </ui:VisualElement>

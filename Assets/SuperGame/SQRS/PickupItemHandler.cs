@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using Definitions;
 
 namespace SuperGame
@@ -9,22 +8,19 @@ namespace SuperGame
         private readonly DefData _defs;
         private readonly InventoryState _inventory;
         private readonly WorldApi _worldApi;
-        private int _nextItemId = 1;
 
         public PickupItemHandler(DefData defs, InventoryState inventory, WorldApi worldApi)
         {
             _defs = defs;
             _inventory = inventory;
             _worldApi = worldApi;
-
-            if (inventory.Items.Count > 0)
-                _nextItemId = inventory.Items.Keys.Max() + 1;
         }
 
         public void Handle(PickupItemCommand command)
         {
             if (_worldApi.TryGetItem(command.ItemId, out var itemState) is false) return;
-            var defId = itemState.DefId; 
+            var defId = itemState.DefId;
+            int remaining = itemState.Count;
 
             if (_defs.Items.TryGetValue(defId, out var def) && def.Stackable)
             {
@@ -32,32 +28,50 @@ namespace SuperGame
                 {
                     if (state.DefId == defId && state.Count < def.MaxStack)
                     {
-                        state.Count++;
-                        _inventory.NotifyChanged();
-                        _worldApi.DestroyItem(command.ItemId);
-                        return;
+                        int canAdd = def.MaxStack - state.Count;
+                        int toAdd = remaining < canAdd ? remaining : canAdd;
+                        state.Count += toAdd;
+                        remaining -= toAdd;
+                        if (remaining <= 0) break;
                     }
                 }
             }
 
+            while (remaining > 0)
+            {
+                short freeSlot = FindFreeSlot();
+                if (freeSlot == -1) break;
+
+                int stackSize = (_defs.Items.TryGetValue(defId, out var d) && d.Stackable)
+                    ? (remaining < d.MaxStack ? remaining : d.MaxStack)
+                    : remaining;
+
+                int itemId = _inventory.AllocateItemId();
+                _inventory.Items[itemId] = new ItemState(itemId, defId, stackSize);
+                _inventory.Slots[itemId] = freeSlot;
+                remaining -= stackSize;
+            }
+
+            int pickedUp = itemState.Count - remaining;
+            if (pickedUp <= 0) return;
+
+            _inventory.NotifyChanged();
+
+            if (remaining > 0)
+                _worldApi.UpdateItemCount(command.ItemId, remaining);
+            else
+                _worldApi.DestroyItem(command.ItemId);
+        }
+
+        private short FindFreeSlot()
+        {
             var occupiedSlots = new HashSet<short>(_inventory.Slots.Values);
-            short freeSlot = -1;
             for (short i = 0; i < _defs.MaxInventorySize; i++)
             {
                 if (occupiedSlots.Contains(i) is false)
-                {
-                    freeSlot = i;
-                    break;
-                }
+                    return i;
             }
-
-            if (freeSlot == -1) return;
-
-            int itemId = _nextItemId++;
-            _inventory.Items[itemId] = new ItemState(itemId, defId, 1);
-            _inventory.Slots[itemId] = freeSlot;
-            _inventory.NotifyChanged();
-            _worldApi.DestroyItem(command.ItemId);
+            return -1;
         }
     }
 }

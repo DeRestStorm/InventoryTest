@@ -14,9 +14,9 @@ namespace SuperGame
         public bool ControlEnabled { get; set; } = true;
         public float Yaw => _yaw;
 
-        private void Awake()
+        public void Init(GameInputSettings settings)
         {
-            _settings = Resources.Load<GameInputSettings>(GameInputSettings.ResourcePath).CameraSettings;
+            _settings = settings?.CameraSettings;
         }
 
         private void Start()

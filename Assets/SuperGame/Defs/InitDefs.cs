@@ -29,7 +29,7 @@ namespace SuperGame
             return new DefData
             {
                 Items = items,
-                MaxInventorySize = dto.MaxInvetorySize
+                MaxInventorySize = dto.MaxInventorySize
             };
         }
     }
