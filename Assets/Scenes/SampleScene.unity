@@ -5561,9 +5561,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7efff4fe5afc7994cbe39ffe8e574cef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SuperGame.PlayerMovement
-  MoveSpeed: 5
-  RotationSpeed: 10
-  Gravity: -20
   _camera: {fileID: 1830721727}
 --- !u!135 &2087404460
 SphereCollider:
@@ -5598,6 +5595,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7ccd4ee75a4d15340b6f0692c6878801, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SuperGame.ItemPickupRange
+  _sphereCollider: {fileID: 2087404460}
 --- !u!4 &2138839845 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2685218483233835502, guid: bef03a7fb32024041981a82b3ed3b588, type: 3}

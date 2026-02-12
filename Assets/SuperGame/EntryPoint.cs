@@ -11,7 +11,7 @@ namespace SuperGame
         [SerializeField] PickupSystem _pickupSystem;
         [SerializeField] WorldItem _worldItemPrefab;
         [SerializeField] Transform _player;
-        [SerializeField] GameInputSettings _gameSettings;
+        [SerializeField] GameSettings _gameSettings;
         [SerializeField] PlayerMovement _playerMovement;
         [SerializeField] ThirdPersonCamera _thirdPersonCamera;
         [SerializeField] GameStateController _gameStateController;

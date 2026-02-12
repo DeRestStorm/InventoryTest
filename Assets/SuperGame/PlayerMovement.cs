@@ -10,7 +10,7 @@ namespace SuperGame
 
         CharacterController _controller;
         InputAction _moveAction;
-        GameInputSettings.MovementSettings _movementSettings;
+        MovementSettings _movementSettings;
         float _verticalVelocity;
 
         public bool ControlEnabled { get; set; } = true;
@@ -20,7 +20,7 @@ namespace SuperGame
             _controller = GetComponent<CharacterController>();
         }
 
-        public void Init(GameInputSettings settings)
+        public void Init(GameSettings settings)
         {
             if (settings is null || settings.InputActions is null)
                 return;

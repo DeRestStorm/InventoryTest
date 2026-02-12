@@ -3,7 +3,7 @@
         {
             "Id": "Stone",
             "Name": "Камень",
-            "Color": "#070707",
+            "Color": "#090909",
             "Stackable": true,
             "MaxStack": 4
         },
@@ -27,5 +27,5 @@
             "MaxStack": 2
         }
     ],
-    "MaxInventorySize": 13
+    "MaxInventorySize": 12
 }

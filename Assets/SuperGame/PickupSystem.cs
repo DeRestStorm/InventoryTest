@@ -15,12 +15,17 @@ namespace SuperGame
         private VisualElement _takeContainer;
         private Label _takeText;
         private Commands _commands;
-        private GameInputSettings _settings;
+        private GameSettings _settings;
 
-        public void Init(Commands commands, GameInputSettings settings)
+        public void Init(Commands commands, GameSettings settings)
         {
+            if (settings is null)
+                return;
+
             _commands = commands;
             _settings = settings;
+            if (_pickupRange is not null)
+                _pickupRange.SetRange(_settings.PickupRange);
         }
 
         private void Start()
