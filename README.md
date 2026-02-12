@@ -1,2 +1,3 @@
 - **Сцена для запуска**: `Assets/Scenes/SampleScene.unity`
 - **JSON с настройками**: `Assets/Resources/DefData.json`
+- **Геймплей (видео)**: [Скачать](https://github.com/DeRestStorm/InventoryTest/blob/video/Gameplay.mp4)
