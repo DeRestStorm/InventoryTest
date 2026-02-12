@@ -13,6 +13,7 @@ namespace SuperGame
 
         [Range(-1f, 1f)]
         [SerializeField] float _pickupMinDot = 0.7f;
+        [Header("Для применения радиуса подбора требуется перезапуск")]
         [SerializeField] float _pickupRange = 3f;
 
         public float PickupMinDot => _pickupMinDot;
