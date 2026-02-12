@@ -12,6 +12,7 @@ namespace SuperGame
         public MovementSettings Movement;
 
         [Range(-1f, 1f)]
+        [Header("Чем ближе к 1, тем ближе должен быть предмет, чтобы к нему прилип текст 'Нажмите E'")]
         [SerializeField] float _pickupMinDot = 0.7f;
         [Header("Для применения радиуса подбора требуется перезапуск")]
         [SerializeField] float _pickupRange = 3f;
